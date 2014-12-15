@@ -1,4 +1,3 @@
-p 'uniquifff'
 module Uniquify
   def self.included(base)
     base.extend ClassMethods
