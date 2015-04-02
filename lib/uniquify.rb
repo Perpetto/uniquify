@@ -36,7 +36,12 @@ module Uniquify
       end
 
       klass.define_singleton_method :"find_with_#{field_name}" do |*args| # this is going to be painful if tokens happen to look like legal object ids
-        args.all?{|arg| arg.to_i != 0 } ? send(:"find_without_#{field_name}",*args) : klass.send(:"find_by_#{field_name.to_s}", args.first)
+        is_id = if !(first = args.first).is_a?(Array) && !( Integer(first) rescue false ) then false else true end
+        if is_id
+          send(:"find_without_#{field_name}",*args) 
+        else
+          klass.send(:"find_by_#{field_name.to_s}", args.first)
+        end
       end
 
       # this craziness taken from, and then compacted into a string class_eval
